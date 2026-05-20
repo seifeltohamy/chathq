@@ -1,0 +1,10 @@
+node_modules/
+.env
+.env.local
+.next/
+out/
+data/
+*.tsbuildinfo
+.vercel
+.claude/settings.local.json
+.DS_Store
