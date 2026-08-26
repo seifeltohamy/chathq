@@ -6,5 +6,5 @@ out/
 data/
 *.tsbuildinfo
 .vercel
-.claude/settings.local.json
+.claude/
 .DS_Store
