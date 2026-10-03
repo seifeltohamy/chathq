@@ -70,7 +70,7 @@ export default function NewAutomation() {
 
   const addKw = () => {
     const kw = kwInput.trim()
-    if (kw && !state.keywords.includes(kw)) {
+    if (kw && !state.keywords.some(k => k.toLowerCase() === kw.toLowerCase())) {
       set({ keywords: [...state.keywords, kw] })
       setKwInput('')
     }

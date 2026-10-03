@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { requireUser, UnauthorizedError } from '@/lib/auth-helpers'
 import { getZernioForUser, NoCredentialsError } from '@/lib/zernio'
+import { withExpandedKeywords, withCollapsedKeywords } from '@/lib/keywords'
 
 type Ctx = { params: Promise<{ id: string }> }
 
@@ -17,7 +18,7 @@ export async function GET(_: Request, { params }: Ctx) {
     const { id } = await params
     const { data, error } = await client.commentautomations.getCommentAutomation({ path: { automationId: id } })
     if (error) return NextResponse.json({ error }, { status: 500 })
-    return NextResponse.json(data)
+    return NextResponse.json({ ...data, automation: withCollapsedKeywords(data?.automation) })
   } catch (e) { return errorResponse(e) }
 }
 
@@ -27,9 +28,9 @@ export async function PATCH(req: Request, { params }: Ctx) {
     const { client } = await getZernioForUser(user)
     const { id } = await params
     const body = await req.json()
-    const { data, error } = await client.commentautomations.updateCommentAutomation({ path: { automationId: id }, body })
+    const { data, error } = await client.commentautomations.updateCommentAutomation({ path: { automationId: id }, body: withExpandedKeywords(body) })
     if (error) return NextResponse.json({ error }, { status: 500 })
-    return NextResponse.json(data)
+    return NextResponse.json({ ...data, automation: withCollapsedKeywords(data?.automation) })
   } catch (e) { return errorResponse(e) }
 }
 

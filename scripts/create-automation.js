@@ -15,13 +15,17 @@ const keywords = process.env.KEYWORDS
   ? process.env.KEYWORDS.split(',').map(k => k.trim()).filter(Boolean)
   : [];
 
+// Save each keyword in its common casings so "link", "LINK" and "Link" all trigger
+const titleCase = s => s.toLowerCase().replace(/(^|\s)(\S)/g, (_, sp, c) => sp + c.toUpperCase());
+const matchKeywords = [...new Set(keywords.flatMap(k => [k, k.toLowerCase(), k.toUpperCase(), titleCase(k)]))];
+
 const body = {
   profileId: process.env.ZERNIO_PROFILE_ID,
   accountId: process.env.ZERNIO_ACCOUNT_ID,
   platformPostId: process.env.INSTAGRAM_POST_ID,
   name: process.env.AUTOMATION_NAME ?? 'Reel DM Test',
   dmMessage: process.env.DM_MESSAGE,
-  ...(keywords.length && { keywords, matchMode: 'contains' }),
+  ...(keywords.length && { keywords: matchKeywords, matchMode: 'contains' }),
   ...(process.env.COMMENT_REPLY && { commentReply: process.env.COMMENT_REPLY }),
 };
 

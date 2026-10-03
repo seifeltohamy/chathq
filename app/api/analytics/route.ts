@@ -2,6 +2,7 @@
 import { NextResponse } from 'next/server'
 import { requireUser, UnauthorizedError } from '@/lib/auth-helpers'
 import { getZernioForUser, NoCredentialsError } from '@/lib/zernio'
+import { withCollapsedKeywords } from '@/lib/keywords'
 
 export async function GET() {
   let z, profileId: string
@@ -20,7 +21,7 @@ export async function GET() {
     query: { profileId },
   })
 
-  const automations = autoData?.automations ?? []
+  const automations = (autoData?.automations ?? []).map(withCollapsedKeywords)
 
   // Fetch full detail + logs for each automation in parallel
   type AutoItem = (typeof automations)[number]
